@@ -40,7 +40,6 @@ T.get('statuses/user_timeline', { count: 5 },  function (err, data, response) {
     tweetObject.retweets = tweet.retweet_count;
     tweetObject.likes = tweet.favorite_count;
     tweets.push(tweetObject);
-    // console.log(tweetObject.date)
   });
 })
 
@@ -58,7 +57,7 @@ T.get('friends/list', { count:5 },  function (err, data, response) {
 })
 
 // Get the 5 most recent messages
-T.get("direct_messages/events/list", { count:5 }, (err, data, res) => {
+T.get("direct_messages/events/list", { count:8 }, (err, data, res) => {
   data.events.forEach(message => {
     const messageObject = {};
     messageObject.text = message.message_create.message_data.text;
@@ -70,10 +69,8 @@ T.get("direct_messages/events/list", { count:5 }, (err, data, res) => {
       messageObject.name = data.name;
       messageObject.picture = data.profile_image_url_https;
     });
-
     messages.push(messageObject);
   });
-	console.log(messages)
 })
 
 // Post a message when pressing tweet-button
@@ -84,7 +81,7 @@ router.post('/', (req, res) => {
     // Creating a new object for the tweet
     const tweetObject = {};
     tweetObject.text = `${tweet}`;
-    tweetObject.date = "Just now";
+    tweetObject.date = moment(new Date()).fromNow();
     tweetObject.retweets = 0;
     tweetObject.likes = 0;
 
