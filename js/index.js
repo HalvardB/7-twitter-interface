@@ -44,33 +44,21 @@ T.get('statuses/user_timeline', { count: 5 },  function (err, data, response) {
   });
 })
 
-// Getting 5 friends
-T.get('friends/ids', { screen_name: user.screenName },  function (err, data, response) {
-  const friendsArray = [];
-  let count = 0;
-
-  // Adding the 5 most recent friends to the friendsArray
-  for (let i = 0; count < 5; i++){
-    friendsArray.push(data.ids[i])
-    count += 1;
+// Get your 5 most recent friends
+T.get('friends/list', { count:5 },  function (err, data, response) {
+	for (let i = 0; i < data.users.length; i++){
+		let friendObject = {
+			"name" : data.users[i].name,
+			"screenName" : data.users[i].screen_name,
+			"picture" : data.users[i].profile_image_url_https,
+			"user_id" : data.users[i].id
+		}
+    friends.push(friendObject);
   }
-
-  // Adding friends information to a new array
-  friendsArray.forEach(function(friend){
-    T.get(`https://api.twitter.com/1.1/users/show.json?user_id=${friend}`, function (err, data, response) {
-      friendObject = {
-        "name" : data.name,
-        "screenName" : data.screen_name,
-        "picture" : data.profile_image_url_https,
-        "user_id" : friend
-      }
-      friends.push(friendObject);
-    })
-  })
 })
 
 // Get the 5 most recent messages
-T.get("direct_messages/events/list", { count:8 }, (err, data, res) => {
+T.get("direct_messages/events/list", { count:5 }, (err, data, res) => {
   data.events.forEach(message => {
     const messageObject = {};
     messageObject.text = message.message_create.message_data.text;
@@ -85,6 +73,7 @@ T.get("direct_messages/events/list", { count:8 }, (err, data, res) => {
 
     messages.push(messageObject);
   });
+	console.log(messages)
 })
 
 // Post a message when pressing tweet-button
