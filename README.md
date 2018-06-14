@@ -1,7 +1,7 @@
 # 7-twitter-interface
 Treehouse Techdegree project 7
 
-How to use
+HOW TO USE:
 Create a Twitter App with 'Read, Write and Access direct messages' permissions, then generate your keys and tokens in Keys and Access Tokens.
 
 Create a config.js file in the root directory with your Twitter keys/tokens like this:
@@ -19,8 +19,11 @@ module.exports = config;
 
 #####
 
-run - npm install
 
-run - npm start
+HOW TO RUN:
 
-http://localhost:3000/
+npm install
+
+npm start
+
+http://localhost:3000

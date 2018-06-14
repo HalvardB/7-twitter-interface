@@ -2242,7 +2242,7 @@ a:hover .app--avatar {
   right: 0;
   left: 0;
   z-index: 1;
-  background: #e8f5fe;
+  background: #c6e7fc;
   padding: 20px 15px;
   border-top: 1px solid #d4edfd;
 }
@@ -2284,7 +2284,7 @@ a:hover .app--avatar {
 /* line 131, ../sass/global.sass */
 .app--tweet--list, .app--user--list {
   list-style: none;
-  padding-bottom: 195px;
+  padding-bottom: 80px;
 }
 /* line 134, ../sass/global.sass */
 .app--tweet--list > li, .app--user--list > li {
@@ -2510,4 +2510,8 @@ input[type="button"] {
 
 h2.sorry {
   text-align: center;
+}
+
+.hide {
+  display: none;
 }

@@ -1,6 +1,14 @@
-/* BUG:
-- something is wrong with direct messages - count is 8, but only 5 is
-  showing. If i reduce count to 5, only 3 shows.
+/* Summary:
+- You can use the attached config-template to make the config file.
+- The app get your 5 most recent tweets, friends and DMs.
+- I added two-way conversation in the DMs, so you can see both your and
+	your friends messages and pictures.
+- You can post a new tweet at the bottom of the page.
+- The tweet is added to the page without refreshing the page. Im using
+	Socket.io for that.
+-	404 errors will redirect to a custom 404-page. Visit /hello (or whatever
+	you want) to see.
+- Your background image is displayed in the top header.
 */
 
 const express = require("express");
@@ -23,6 +31,11 @@ app.use(express.static('public'));
 
 // Get your user information based on credentials
 T.get('account/verify_credentials', (err, data, res, next) => {
+	if(err) {
+		console.log(err)
+	}
+
+	// Adding user information to the user object
 	user.name = data.name;
 	user.screenName = data.screen_name;
   user.id = data.id;
@@ -33,6 +46,11 @@ T.get('account/verify_credentials', (err, data, res, next) => {
 
 // Get your last 5 tweets
 T.get('statuses/user_timeline', { count: 5 },  function (err, data, response) {
+	if(err) {
+		console.log(err)
+	}
+
+	// Adding tweets to the tweets array
   data.forEach(function(tweet) {
     const tweetObject = {};
     tweetObject.text = tweet.text;
@@ -44,7 +62,12 @@ T.get('statuses/user_timeline', { count: 5 },  function (err, data, response) {
 })
 
 // Get your 5 most recent friends
-T.get('friends/list', { count:5 },  function (err, data, response) {
+T.get('friends/list', { count: 5 },  function (err, data, response) {
+	if(err) {
+		console.log(err)
+	}
+
+	// Adding friends to the friends array
 	for (let i = 0; i < data.users.length; i++){
 		let friendObject = {
 			"name" : data.users[i].name,
@@ -57,7 +80,12 @@ T.get('friends/list', { count:5 },  function (err, data, response) {
 })
 
 // Get the 5 most recent messages
-T.get("direct_messages/events/list", { count:8 }, (err, data, res) => {
+T.get("direct_messages/events/list", { count: 5 }, (err, data, res) => {
+	if(err) {
+		console.log(err)
+	}
+
+	// Adding DMs to the messages array
   data.events.forEach(message => {
     const messageObject = {};
     messageObject.text = message.message_create.message_data.text;
@@ -73,38 +101,17 @@ T.get("direct_messages/events/list", { count:8 }, (err, data, res) => {
   });
 })
 
-// Post a message when pressing tweet-button
-router.post('/', (req, res) => {
-	const tweet = req.body.status;
-  T.post('statuses/update', { status: `${tweet}` }, function(err, data, response) {
-
-    // Creating a new object for the tweet
-    const tweetObject = {};
-    tweetObject.text = `${tweet}`;
-    tweetObject.date = moment(new Date()).fromNow();
-    tweetObject.retweets = 0;
-    tweetObject.likes = 0;
-
-    // Removing the last tweet and adding the new one
-    tweets.pop(tweets[4]);
-	  tweets.unshift(tweetObject);
-
-    // Loading the page after submitting
-    res.render('index', { user, friends, messages, tweets });
-  })
-});
-
 // Render index.pug
 router.get('/', (req, res) => {
 	res.render('index', { user, friends, messages, tweets });
 });
 
-// 404 error render
+// 404 error page
 router.get('*', function(req, res){
   res.render('error');
 });
 
-// Removing an depreciation warning from Moment.
+// Removing a depreciation warning from Moment.
 // If this was a live long-term site i would not use Moment, but
 // it works for this project.
 moment.suppressDeprecationWarnings = true;
